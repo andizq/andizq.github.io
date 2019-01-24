@@ -1,1 +1,697 @@
+<!--
+App. que muestra sensores de aceleración, GPS, brújula y giróscopo en el dispositivo
 andizq's webpage
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="phonegap.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <title>Multisensores</title>
+</head>
+
+<body>
+
+<!--
+Página principal
+-->
+
+
+  <div id="pagina0">
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;border:solid white 5px">
+
+        <div style="display:table-cell;width:33%;vertical-align:middle;">
+        </div>
+
+        <div style="display:table-cell;width:33%;text-align:center;vertical-align:middle;">
+          <h3 style="color:white">Multisensor</h3>
+        </div>
+
+        <div style="display:table-cell;width:33%;vertical-align:middle;">
+          <img src="img/gear.png" style="width:40%;margin-left:56%;margin-top:1%" onclick="muestraConfiguracion()"/>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:100%;height:20vh;text-align:center;">
+
+        <div id="Posicion0" style="margin-top:15vh">
+
+          <h1 style="font-size:7vh">Multisensor</h1>
+
+        </div>
+
+      </div>
+
+
+      <div style="display:table;width:98%;height:40vh;">
+
+        <div style="display:table-row;width:100%">
+
+          <div style="display:table-cell;width:50%;">
+            <img src="img/gps.png" style="width:63%;margin-left:30%;margin-top:1%" onclick="muestraGPS()"/>
+          </div>
+
+          <div style="display:table-cell;width:50%;">
+            <img src="img/rocket1.png" style="width:60%;margin-left:6%;margin-top:1%" onclick="muestraACEL()"/>
+          </div>
+
+        </div>
+
+
+        <div style="display:table-row;width:100%">
+
+          <div style="display:table-cell;width:50%;">
+            <img src="img/compass.png" style="width:62%;margin-left:30%;margin-top:1%" onclick="muestraBRUJULA()"/>
+          </div>
+
+          <div style="display:table-cell;width:50%">
+            <img src="img/giroscopio1.png" style="width:60%;margin-left:6%;margin-top:1%" onclick="muestraGIROSC()"/>
+          </div>
+
+        </div>
+
+      </div>
+
+  </div>
+
+
+
+<!--
+Página aceleración
+-->
+
+
+
+  <div id="paginaACEL" style="display:none">
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;border:solid blue 5px">
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/back.png" style="width:40%;margin-left:2%;margin-top:1%" onclick="volverAtras()"/>
+          </div>
+
+          <div style="display:table-cell;width:33%;text-align:center;vertical-align:middle;">
+            <h3>Multisensor</h3>
+          </div>
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/gear.png" style="width:40%;margin-left:56%;margin-top:1%" onclick="muestraConfiguracion()"/>
+          </div>
+
+
+      </div>
+
+    <div style="display:table;width:98%;height:5vh;text-align:center;vertical-align:middle;font-size:3vh;color:black;border:solid blue 5px">
+      <h2>Acelerómetro</h2>
+    </div>
+
+    <div style="display:table;width:98%;">
+
+          <div style="display:table-row;height:5vh">
+
+              <div style="display:table-cell;text-align:center;vertical-align:middle;font-size:4vh;color:black;">
+                ax
+              </div>
+
+              <div style="display:table-cell;text-align:center;vertical-align:middle;font-size:4vh;color:black;">
+                ay
+              </div>
+
+              <div style="display:table-cell;text-align:center;vertical-align:middle;font-size:4vh;color:black;">
+                az
+              </div>
+
+          </div>
+
+          <div style="display:table-row;height:5vh">
+
+              <div style="display:table-cell;text-align:center">
+                <pre id="valorAx" style="width:60%;margin:auto;padding:5%;font-size:3vh;color:white;margin-top:10%;background-color:#80CC37;border:solid black 1px">1.0</pre>
+              </div>
+
+              <div style="display:table-cell;text-align:center">
+                <pre id="valorAy" style="width:60%;margin:auto;padding:5%;font-size:3vh;color:white;margin-top:10%;background-color:#80CC37;border:solid black 1px">1.0</pre>
+              </div>
+
+              <div style="display:table-cell;text-align:center">
+                <pre id="valorAz" style="width:60%;margin:auto;padding:5%;font-size:3vh;color:white;margin-top:10%;background-color:#80CC37;border:solid black 1px">1.0</pre>
+              </div>
+
+          </div>
+
+          <div style="display:table-row;width:100%;height:60vh;">
+
+              <div id="BoxAx" style="display:none;">
+                <canvas id="graficoAx" style="margin-top:10%;margin-left:17%;border:solid black 1px;"></canvas>
+              </div>
+
+              <div id="BoxAy" style="display:none;">
+                <canvas id="graficoAy" style="margin-top:10%;margin-left:17%;border:solid black 1px;"></canvas>
+              </div>
+
+              <div id="BoxAz" style="display:none;">
+                <canvas id="graficoAz" style="margin-top:10%;margin-left:17%;border:solid black 1px;"></canvas>
+              </div>
+
+          </div>
+
+    </div>
+
+  </div>
+
+
+  <!--
+  Página GPS - Geolocalización
+  -->
+
+
+  <div id="paginaGPS" style="display:none">
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;border:solid blue 5px">
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/back.png" style="width:40%;margin-left:2%;margin-top:1%" onclick="volverAtras()"/>
+          </div>
+
+          <div style="display:table-cell;width:33%;text-align:center;vertical-align:middle;">
+            <h3>Multisensor</h3>
+          </div>
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/gear.png" style="width:40%;margin-left:56%;margin-top:1%" onclick="muestraConfiguracion()"/>
+          </div>
+
+
+      </div>
+
+      <div style="display:table;width:98%;height:3vh;text-align:center;vertical-align:middle;font-size:3vh;color:black;border:solid blue 5px">
+
+          <h2 style="text-align:center">GPS</h2>
+
+      </div>
+
+      <div style="display:table;width:98%;">
+
+          <div style="display:table-cell;width:30%;">
+
+          </div>
+
+          <div style="display:table-cell;width:35%;">
+
+          </div>
+
+          <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+              Error
+          </div>
+
+     </div>
+
+      <div style="display:table;width:98%;height:40vh;text-align:center;vertical-align:middle;font-size:3vh;color:black;">
+
+
+          <div style="display:table-row">
+
+              <div style="display:table-cell;width:30%;text-align:center;vertical-align:middle;">
+                Lat.
+              </div>
+
+              <div style="display:table-cell;width:35%;vertical-align:middle;">
+                <pre id="latitud" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#80CC37;color:white;text-align:center;vertical-align:middle;border:solid black 1px">00.00000</pre>
+              </div>
+
+              <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+                <pre id="errorlatitud" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#f5bf9a;color:white;text-align:center;vertical-align:middle;border:solid black 1px">00.00</pre>
+             </div>
+
+          </div>
+
+          <div style="display:table-row">
+
+              <div style="display:table-cell;width:30%;text-align:center;vertical-align:middle;">
+                Lon.
+              </div>
+
+              <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+                <pre id="longitud" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#80CC37;color:white;text-align:center;vertical-align:middle;font-size:2.7vh;border:solid black 1px">-00.0000</pre>
+              </div>
+
+              <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+                <pre id="errorlongitud" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#f5bf9a;color:white;text-align:center;vertical-align:middle;border:solid black 1px">00.00</pre>
+             </div>
+
+          </div>
+
+          <div style="display:table-row">
+
+              <div style="display:table-cell;width:30%;text-align:center;vertical-align:middle;">
+                Alt.
+              </div>
+
+              <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+                <pre id="altitud" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#80CC37;color:white;text-align:center;vertical-align:middle;border:solid black 1px">0000.00</pre>
+              </div>
+
+              <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+                <pre id="erroraltitud" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#f5bf9a;color:white;text-align:center;vertical-align:middle;border:solid black 1px">00.00</pre>
+             </div>
+
+          </div>
+
+           <div style="display:table-row">
+
+              <div style="display:table-cell;width:30%;text-align:center;vertical-align:middle;">
+                Dir.
+              </div>
+
+              <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+                <pre id="direccion" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#80CC37;color:white;text-align:center;vertical-align:middle;border:solid black 1px">00.0000</pre>
+              </div>
+
+          </div>
+
+          <div style="display:table-row">
+
+              <div style="display:table-cell;width:30%;text-align:center;vertical-align:middle;">
+                Vel.
+              </div>
+
+              <div style="display:table-cell;width:35%;text-align:center;vertical-align:middle;">
+                <pre id="velocidad" style="width:70%;margin:auto;padding:7% 10% 7% 10%;background-color:#80CC37;color:white;text-align:center;vertical-align:middle;border:solid black 1px">00.0000</pre>
+              </div>
+
+          </div>
+
+      </div>
+
+    <h3 style="text-align:center">Dirección más cercana</h3>
+    <div style="display:table;width:100%;height:10vh;border:solid black 1px">
+
+      <div id="muestraLocalizacion" style="display:table-cell;text-align:center;vertical-align:middle;">
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!--
+  Página Giróscopo
+  -->
+
+
+  <div id="paginaGIROSC" style="display:none">
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;border:solid blue 5px">
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/back.png" style="width:40%;margin-left:2%;margin-top:1%" onclick="volverAtras()"/>
+          </div>
+
+          <div style="display:table-cell;width:33%;text-align:center;vertical-align:middle;">
+            <h3>Multisensor</h3>
+          </div>
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/gear.png" style="width:40%;margin-left:56%;margin-top:1%" onclick="muestraConfiguracion()"/>
+          </div>
+
+
+      </div>
+
+    <div style="display:table;width:98%;height:5vh;text-align:center;vertical-align:middle;font-size:3vh;color:black;border:solid blue 5px">
+      <h2>Giróscopo</h2>
+    </div>
+
+    <div style="display:table;width:100%;text-align:center;vertical-align:middle">
+        <h3>Alpha</h3>
+    </div>
+
+    <div style="display:table;width:100%;height:10vh;">
+
+        <div style="display:table-row;">
+
+            <div style="display:table-cell;width:50%;vertical-align:middle;"> <!--Usar padding para el div interno-->
+              <pre id="valorAlpha" style="width:80%;margin:auto;padding:1% 0 1% 0;background-color:#80CC37;color:white;text-align:center;vertical-align:middle;font-size:5vh;border:solid black 1px">000</pre>
+            </div>
+
+            <div id="BoxAlpha" style="display:none;width:50%;text-align:center;vertical-align:middle;">
+             <canvas id="graficoAlpha" style="vertical-align:middle;"></canvas>
+           </div>
+
+        </div>
+    </div>
+
+    <div style="display:table;width:100%;text-align:center;vertical-align:middle">
+        <h3>Beta</h3>
+    </div>
+
+    <div style="display:table;width:100%;height:10vh;">
+
+        <div style="display:table-row">
+
+            <div style="display:table-cell;width:50%;text-align:center;vertical-align:middle;">
+              <pre id="valorBeta" style="width:80%;margin:auto;padding:1% 0 1% 0;background-color:#80CC37;color:white;font-size:5vh;border:solid black 1px">000</pre>
+            </div>
+
+            <div id="BoxBeta" style="display:none;width:50%;text-align:center;vertical-align:middle;">
+             <canvas id="graficoBeta" style="vertical-align:middle;"></canvas>
+           </div>
+
+        </div>
+
+    </div>
+
+    <div style="display:table;width:100%;text-align:center;vertical-align:middle">
+        <h3>Gamma</h3>
+    </div>
+
+    <div style="display:table;width:100%;height:10vh;">
+
+        <div style="display:table-row">
+
+            <div style="display:table-cell;width:50%;text-align:center;vertical-align:middle;">
+              <pre id="valorGamma" style="width:80%;margin:auto;padding:1% 0 1% 0;background-color:#80CC37;color:white;font-size:5vh;border:solid black 1px">000</pre>
+            </div>
+
+            <div id="BoxGamma" style="display:none;width:50%;text-align:center;vertical-align:middle;">
+              <canvas id="graficoGamma" style="vertical-align:middle;"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+  </div>
+
+
+  <!--
+  Página Brújula
+  -->
+
+  <div id="paginaBrujula" style="display:none">
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;border:solid blue 5px">
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/back.png" style="width:40%;margin-left:2%;margin-top:1%" onclick="volverAtras()"/>
+          </div>
+
+          <div style="display:table-cell;width:33%;text-align:center;vertical-align:middle;">
+            <h3>Multisensor</h3>
+          </div>
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/gear.png" style="width:40%;margin-left:56%;margin-top:1%" onclick="muestraConfiguracion()"/>
+          </div>
+
+
+      </div>
+
+    <div style="display:table;width:98%;height:5vh;text-align:center;vertical-align:middle;font-size:3vh;color:black;border:solid blue 5px">
+      <h2>Brújula</h2>
+    </div>
+
+    <div style="display:table;width:100%;height:10vh;margin-top:5%;">
+      <div style="display:table-cell;vertical-align:middle;">
+        <pre id="valorBrujula" style="width:80%;margin:auto;padding:2% 0 2% 0;text-align:center;background-color:#80CC37;color:white;font-size:5vh;border:solid black 1px">000</pre>
+      </div>
+    </div>
+
+    <div style="display:table;width:100%;height:50vh;margin-top:5%;">
+
+        <div style="display:table-row">
+
+          <div id="BoxBrujula" style="display:none;width:100%;text-align:center;vertical-align:middle;">
+            <canvas id="graficoBrujula" style="vertical-align:middle;"></canvas>
+          </div>
+
+        </div>
+
+    </div>
+
+    <div id="muestraDireccion">
+    </div>
+
+  </div>
+
+
+<!--
+Página Configuración
+-->
+
+  <div id="paginaConfiguracion" style="display:none">
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;border:solid blue 5px">
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/back.png" style="width:40%;margin-left:2%;margin-top:1%" onclick="volverAtras()"/>
+          </div>
+
+          <div style="display:table-cell;width:33%;text-align:center;vertical-align:middle;">
+            <h3>Multisensor</h3>
+          </div>
+
+          <div style="display:table-cell;width:33%;vertical-align:middle;">
+            <img src="img/gear.png" style="width:40%;margin-left:56%;margin-top:1%" onclick="muestraConfiguracion()"/>
+          </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:5vh;text-align:center;vertical-align:middle;font-size:3vh;color:black;border:solid blue 5px">
+        <h2>Configuración</h2>
+      </div>
+
+      <!--
+      Config. GPS
+      -->
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;">
+
+          <div style="display:table-cell;width:90%;vertical-align:middle;font-size:3.5vh">
+            ¿GPS?
+          </div>
+
+          <div id="existeGPS" style="display:table-cell;width:10%;vertical-align:middle;color:green">
+          </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Lat.:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input id="ponerLatitud" type="text" style="width:100%;text-align:right" placeholder="0.00000 (º)" onchange="configLat(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Lon.:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input id="ponerLongitud" type="text" style="width:100%;text-align:right" placeholder="0.00000 (º)" onchange="configLon(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Alt.:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="0.00 (m)" onchange="configAlt(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Dir.:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="0.00 (º)" onchange="configDirG(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Vel.:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="0.00 (m/s)" onchange="configVel(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <!--
+      Config. Brújula
+      -->
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;">
+
+          <div style="display:table-cell;width:90%;vertical-align:middle;font-size:3.5vh">
+            ¿Brújula?
+          </div>
+
+          <div id="existeBRUJULA" style="display:table-cell;width:10%;vertical-align:middle;color:green">
+
+          </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Dir.:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="000 (º)" onchange="configDirB(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <!--
+      Config. Giróscopo
+      -->
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;">
+
+          <div style="display:table-cell;width:90%;vertical-align:middle;font-size:3.5vh">
+            ¿Giróscopo?
+          </div>
+
+          <div id="existeGIROSC" style="display:table-cell;width:10%;vertical-align:middle;color:green">
+
+          </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Alpha:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="000 (º)" onchange="configAlpha(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Beta:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="000 (º)" onchange="configBeta(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Gamma:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="000 (º)" onchange="configGamma(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <!--
+      Config. Acelerómetro
+      -->
+
+      <div style="display:table;width:98%;height:5vh;margin-top:1%;">
+
+          <div style="display:table-cell;width:90%;vertical-align:middle;font-size:3.5vh">
+            ¿Acelerómetro?
+          </div>
+
+          <div id="existeACEL" style="display:table-cell;width:10%;vertical-align:middle;color:green">
+
+          </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Ax:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="0.00 (m/s2)" onchange="configAx(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Ay:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="0.00 (m/s2)" onchange="configAy(this.value)"/><br>
+        </div>
+
+      </div>
+
+      <div style="display:table;width:98%;height:4vh">
+
+        <div style="display:table-cell;width:30%;vertical-align:middle;font-size:2.5vh;">
+          <div style="margin-left:10%">Az:</div>
+        </div>
+
+        <div style="display:table-cell;width:70%;vertical-align:middle;color:green">
+          <input type="text" style="width:100%;text-align:right" placeholder="0.00 (m/s2)" onchange="configAz(this.value)"/><br>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+
+</body>
+
+</html>
+
+
+
+
+
